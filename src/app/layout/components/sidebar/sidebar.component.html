@@ -1,0 +1,64 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+    <div class="list-group">
+        <a routerLink="/home" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-home"></i>&nbsp;
+            <span>Home</span>
+        </a>
+        <!-- <a *ngFor="let item of menus" [routerLink]="item.menrut" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="{{ 'fa fa-fw ' + item.menico }}"></i>&nbsp;
+            <span>{{ item.mennom }}</span>
+        </a> -->
+        <a routerLink="/sistema" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-desktop"></i>&nbsp;
+            <span>Sistema</span>
+        </a>
+        <a routerLink="/menu" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-th-list"></i>&nbsp;
+            <span>Menu</span>
+        </a>
+        <a routerLink="/funcionalidad" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-wrench"></i>&nbsp;
+            <span>Funcionalidad</span>
+        </a>
+        <a routerLink="/rol" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fas fa-user-md"></i>&nbsp;
+            <span>Rol</span>
+        </a>
+        <a routerLink="/usuario" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-user"></i>&nbsp;
+            <span>Usuario</span>
+        </a>
+        <a routerLink="/reporte" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-table"></i>&nbsp;
+            <span>Reporte</span>
+        </a>
+        <div class="header-fields">
+            <a (click)="rltAndLtr()" class="list-group-item">
+                <span><i class="fa fa-arrows-h"></i>&nbsp; RTL/LTR</span>
+            </a>
+            <div class="nested-menu">
+                <a class="list-group-item" (click)="addExpandClass('profile')">
+                    <span><i class="fa fa-user"></i>&nbsp; {{ username }}</span>
+                </a>
+                <li class="nested" [class.expand]="showMenu === 'profile'">
+                    <ul class="submenu">
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['/cambiar-contrasena']">
+                                <i class="fa fa-fw fa-gear"></i> Cambiar Contraseña
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="onLoggedout()">
+                                <i class="fa fa-fw fa-power-off"></i> Salir
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </div>
+    <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+        <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+        <span>Contraer Sidebar</span>
+    </div>
+</nav>

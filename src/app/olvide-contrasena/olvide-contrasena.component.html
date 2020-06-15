@@ -1,0 +1,18 @@
+<div class="login-page" [@routerTransition]>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <img src="assets/images/LogoBlancoATU.png" width="200px" class="rounded" />
+            <h1>Recuperar Contraseña</h1>
+            <form role="form">
+                <div class="form-content">
+                    <div class="form-group">
+                        <input type="text" maxlength="30" [(ngModel)]="usuario" name="usuario" class="form-control input-underline input-lg" id="" placeholder="Usuario">
+                    </div>
+                </div>
+                <a class="btn rounded-btn" (click)="enviar()">Enviar</a> &nbsp;
+            </form>
+            <div *ngIf="mensaje">{{mensaje}}</div>
+            <div *ngIf="error">{{error}}</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="login-page" [@routerTransition]>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <img src="assets/images/LogoBlancoATU.png" width="200px" class="rounded" />
+            <h1>Sistema de Seguridad y Acceso</h1>
+            <form [formGroup]="form" (submit)="onLoggedin()" novalidate>
+                <div class="form-content">
+                    <div class="form-group">
+                        <input type="text" maxlength="30" [ngClass]="{'is-valid': form.get('email').valid, 'is-invalid': form.get('email').invalid  && form.get('email').touched }" formControlName="email" class="form-control input-underline input-lg" placeholder="Usuario">
+                        <div class="invalid-feedback texto">
+                            Ingrese el email.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" maxlength="20" [ngClass]="{'is-valid': form.get('password').valid, 'is-invalid': form.get('password').invalid  && form.get('password').touched }" formControlName="password" class="form-control input-underline input-lg" placeholder="Contraseña">
+                        <div class="invalid-feedback texto">
+                            Ingrese la contraseña.
+                        </div>
+                    </div>
+                    <!-- <div>
+                        <re-captcha formControlName="recaptchaReactive" style="display: inline-block;"></re-captcha>
+                    </div> -->
+                    <div class="form-group">
+                        <a class="texto" routerLink="/olvide-contrasena">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </div>
+                <button [disabled]="loading" class="btn btn btn-link rounded-btn" type="submit" [disabled]="form.invalid">
+                    <i [ngClass]="{'': !loading, 'fa fa-refresh fa-spin': loading }"></i>
+                    Ingresar
+                </button> &nbsp;
+            </form>
+            <!-- <div className="social-login">
+                <a className="btn btn-block social-btn google" [href]="google">
+                    <img src="assets/images/google-logo.png" alt="Google" /> Log in with Google</a>
+                <a className="btn btn-block social-btn facebook" [href]="facebook">
+                    <img src="assets/images/fb-logo.png" alt="Facebook" /> Log in with Facebook</a>
+                <a className="btn btn-block social-btn github" [href]="github">
+                    <img src="assets/images/github-logo.png" alt="Github" /> Log in with Github</a>
+            </div> -->
+        </div>
+    </div>
+</div>

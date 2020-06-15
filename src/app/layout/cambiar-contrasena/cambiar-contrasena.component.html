@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="card-header">
+        <h2><strong>Cambiar Contraseña</strong></h2>
+    </div>
+    <div class="card-body">
+        <div class="col-md-3 col-sm-3 col-xs-3">
+            <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                <label>Nueva Contraseña</label>
+                <div class="form-group">
+                    <div class="form-line">
+                        <input class="form-control" maxlength="30" [ngClass]="{'is-valid': form.get('password').valid, 'is-invalid': form.get('password').invalid }" type="password" name="password" placeholder="Nueva contraseña" formControlName="password">
+                        <div class="invalid-feedback">
+                            Ingrese la nueva contraseña.
+                        </div>
+                    </div>
+                </div>
+                <label>Confirmación de contraseña</label>
+                <div class="form-group">
+                    <div class="form-line">
+                        <input class="form-control" maxlength="30" [ngClass]="{'is-valid': form.get('confirmPassword').valid, 'is-invalid': form.get('confirmPassword').invalid }" type="password" placeholder="Repetir contraseña" formControlName="confirmPassword">
+                        <div class="invalid-feedback">
+                            Ingrese la nueva contraseña.
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">
+                        <i class="fa fa-save"></i>
+                        Cambiar contraseña</button>
+            </form>
+            <div *ngIf="form.controls.confirmPassword.errors?.MatchPassword">Constraseñas no coinciden</div>
+            <div *ngIf="mensaje">{{mensaje}}</div>
+            <div *ngIf="error">{{error}}</div>
+        </div>
+    </div>
+</div>

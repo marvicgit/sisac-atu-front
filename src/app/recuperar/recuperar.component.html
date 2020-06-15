@@ -1,0 +1,32 @@
+<div *ngIf="!tokenValido">
+    La petición no es válida o ha expirado :(</div>
+<div class="login-page" [@routerTransition] *ngIf="tokenValido">
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <img src="assets/images/logo-tren.png" width="150px" class="rounded" />
+            <h1>Nueva Contraseña</h1>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="form-content">
+                    <div class="form-group">
+                        <input class="form-control input-underline input-lg" type="password" name="password" placeholder="Nueva contraseña" formControlName="password" [ngClass]="{'is-valid': form.get('password').valid, 'is-invalid': form.get('password').invalid }">
+                        <div class="invalid-feedback">
+                            Ingrese la nueva contraseña.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control input-underline input-lg" type="password" placeholder="Repetir contraseña" formControlName="confirmPassword" [ngClass]="{'is-valid': form.get('password').valid, 'is-invalid': form.get('password').invalid }">
+                        <div class="invalid-feedback">
+                            Ingrese la nueva contraseña.
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn btn-link rounded-btn" type="submit">Cambiar contraseña</button> &nbsp;
+            </form>
+            <a class="texto" routerLink="/login">Ir a Login</a>
+            <div *ngIf="form.controls.confirmPassword.errors?.MatchPassword">Constraseñas no coinciden</div>
+            <div *ngIf="mensaje">{{mensaje}}</div>
+            <div *ngIf="error">{{error}}</div>
+        </div>
+    </div>
+</div>

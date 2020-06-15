@@ -1,0 +1,162 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <ul class="breadcrumb breadcrumb-style ">
+                        <li class="breadcrumb-item">
+                            <h4 class="page-title">ROL</h4>
+                        </li>
+                        <li class="breadcrumb-item bcrumb-1">
+                            <a routerLink="/home">
+                                <i class="fa fa-home"></i> Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Rol</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Basic Examples -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><strong>Listado de Roles</strong></h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <form>
+                                        <div class="form-row align-items-center">
+                                            <div class="col-auto">
+                                                <input type="text" class="form-control mb-2" name="searchTerm" [(ngModel)]="serviceTable.searchTerm" placeholder="Buscar">
+                                                <span class="ml-3" *ngIf="serviceTable.loading$ | async">Loading...</span>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')" (click)="open(content)" class="btn btn-primary mb-2">Agregar <i class="fa fa-plus"></i>
+                                              </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr class="table-primary">
+                                                <th scope="col" sortable="rolid" (sort)="onSort($event)">Id</th>
+                                                <th scope="col" sortable="rolnom" (sort)="onSort($event)">Nombre</th>
+                                                <th scope="col" sortable="rolsig" (sort)="onSort($event)">Sigla</th>
+                                                <th scope="col">Sigla</th>
+                                                <th *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')" scope="col">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of roles$ | async">
+                                                <td>
+                                                    <ngb-highlight [result]="item.rolid" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                </td>
+                                                <td>
+                                                    <ngb-highlight [result]="item.rolnom" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                </td>
+                                                <td>
+                                                    <ngb-highlight [result]="item.rolsig" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                </td>
+                                                <td>
+                                                    <span class="badge" [ngClass]="{'badge-success': item.estreg == 1, 'badge-danger': item.estreg == 0 }">{{ item.estreg == 1 ? 'ACTIVO' : 'INACTIVO' }}</span>
+                                                </td>
+                                                <td *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')">
+                                                    <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>
+                                                    <button class="btn btn-sm btn-link" (click)="elimnar(item)"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="d-flex justify-content-between p-2">
+                                        <ngb-pagination [collectionSize]="total$ | async" [(page)]="serviceTable.page" [pageSize]="serviceTable.pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                                        </ngb-pagination>
+
+                                        <select class="custom-select" style="width: auto" name="pageSize" [(ngModel)]="serviceTable.pageSize ">
+                                        <option [ngValue]="2 ">2 items por pagina</option>
+                                        <option [ngValue]="4 ">4 items por pagina</option>
+                                        <option [ngValue]="6 ">6 items por pagina</option>
+                                    </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- #END# Basic Examples -->
+        <ng-template #content let-c="close" let-d="dismiss">
+            <div class="modal-header">
+                <h4 class="modal-title">Rol</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form" (submit)="registrar()" novalidate>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label>Nombre</label>
+                            <div class="form-line">
+                                <input type="text" maxlength="50" class="form-control" [ngClass]="{'is-valid': form.get('rolnom').valid, 'is-invalid': form.get('rolnom').invalid && form.get('rolnom').touched }" formControlName="rolnom" placeholder="Nombre" name="rolnom">
+                                <div class="invalid-feedback">
+                                    Ingrese el nombre.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label>Sigla</label>
+                            <div class="form-line">
+                                <input type="text" maxlength="20" class class="form-control" [ngClass]="{'is-valid': form.get('rolsig').valid, 'is-invalid': form.get('rolsig').invalid && form.get('rolnom').touched }" formControlName="rolsig" placeholder="Sigla" name="rolsig">
+                                <div class="invalid-feedback">
+                                    Ingrese la sigla.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label>Descripción</label>
+                    <div class="form-group">
+                        <div class="form-line">
+                            <input type="text" maxlength="100" class="form-control" [ngClass]="{'is-valid': form.get('roldes').valid, 'is-invalid': form.get('roldes').invalid && form.get('rolnom').touched }" formControlName="roldes" placeholder="Descripción" name="roldes">
+                            <div class="invalid-feedback">
+                                Ingrese la descripción.
+                            </div>
+                        </div>
+                    </div>
+                    <label>Sistema</label>
+                    <div class="form-group">
+                        <ng-select [items]="sistemas" bindLabel="sisnom" (change)="changeSistema()" bindValue="id" formControlName="sisid">
+                        </ng-select>
+                        <div class="invalid-feedback">Elija el sistema</div>
+                    </div>
+                    <label>Menu</label>
+                    <div class="form-group">
+                        <ng-select [items]="filtroMenus" bindLabel="mennom" [multiple]="true" bindValue="menid" formControlName="menusid">
+                        </ng-select>
+                        <div class="invalid-feedback">Elija el menu</div>
+                    </div>
+                    <label>Funcionalidades</label>
+                    <div class="form-group">
+                        <ng-select [items]="funcionalidades" bindLabel="funnom" [multiple]="true" bindValue="id" formControlName="funcionalidadesid">
+                        </ng-select>
+                        <div class="invalid-feedback">Elija la funcionalidad</div>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                          <i class="fa fa-save"></i>
+                          Grabar</button>
+                    <button type="button" class="btn btn-danger waves-effect" (click)="c('Close click')">Cancel</button>
+                </form>
+            </div>
+            <!-- <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
+              </div> -->
+        </ng-template>
+    </div>
+</section>
