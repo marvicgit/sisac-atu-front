@@ -57,15 +57,15 @@ export class LoginService {
 
     const params = new URLSearchParams();
     params.set('grant_type', 'password');
-    params.set('username', encodeURIComponent(login.email));
-    params.set('password', encodeURIComponent(login.password));
-
+    params.set('username', login.email);
+    params.set('password', login.password);
     return this.http.post(`${this.url}/token`, params.toString(), { headers: httpHeaders });
   }
 
   guardarUsuario(accessToken: string) {
     const payload = this.obtenerDatosToken(accessToken);
     this._usuario = new Usuario();
+    this._usuario.id = payload.id;
     this._usuario.usulogin = payload.user_name;
     this._usuario.usunom = payload.nombre;
     this._usuario.usuapepat = payload.apellido_paterno;
@@ -102,7 +102,7 @@ export class LoginService {
       sessionStorage.clear();
       this.router.navigate(['/login']);
     }, error => {
-      console.log(error);
+      console.log('Error al revocar token:' + error);
     });
   }
 
@@ -121,18 +121,8 @@ export class LoginService {
     });
   }
 
-  enviarCorreo(correo: string) {
-    return this.http.post<number>(`${environment.HOST_URL}/sisac/login/enviarCorreo`, correo, {
-      headers: new HttpHeaders().set('Content-Type', 'text/plain')
-    });
-  }
-
   verificarTokenReset(token: string) {
     return this.http.get<number>(`${environment.HOST_URL}/sisac/login/restablecer/verificar/${token}`);
-  }
-
-  cambiarContraseña(data: Usuario) {
-    return this.http.post<number>(`${environment.HOST_URL}/sisac/login/cambiarClave`, data);
   }
 
   restablecer(token: string, clave: string) {

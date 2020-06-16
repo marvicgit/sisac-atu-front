@@ -80,8 +80,8 @@
                                                         <td>
                                                             <ngb-highlight [result]="item.usucorreo" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                         </td>
-                                                        <td><span class="badge" [ngClass]="{'badge-success': item.usublo == 0, 'badge-danger': item.usublo == 1 }">{{ item.usublo == 1 ? 'SI' : 'NO' }}</span></td>
-                                                        <td><span class="badge" [ngClass]="{'badge-success': item.estreg == 1, 'badge-danger': item.estreg == 0 }">{{ item.estreg == '1' ? 'ACTIVO' : 'INACTIVO' }}</span></td>
+                                                        <td><span class="badge" [ngClass]="{'badge-success': item.usuenable, 'badge-danger': !item.usuenable }">{{ item.usuenable ? 'SI' : 'NO' }}</span></td>
+                                                        <td><span class="badge" [ngClass]="{'badge-success': item.estreg == '1', 'badge-danger': item.estreg =='0' }">{{ item.estreg == '1' ? 'ACTIVO' : 'INACTIVO' }}</span></td>
                                                         <td *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN') || loginService.hasRole('ROLE_SISAC_USER')">
                                                             <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>
                                                             <button class="btn btn-sm btn-link" (click)="elimnar(item)"><i class="fa fa-trash"></i></button>
@@ -135,7 +135,7 @@
                                 <div class="input-group mb-3">
                                     <input class="form-control" maxlength="50" upperCase formControlName="usulogin" placeholder="Usuario" name="usulog" type="text">
                                     <div class="input-group-append">
-                                        <button class="btn btn-success" (click)="buscarUsuarioLdap()" type="button">Buscar</button>
+                                        <button class="btn btn-success" (click)="buscarUsuarioLDAPAATE()" type="button">Buscar</button>
                                     </div>
                                 </div>
                             </div>
@@ -179,14 +179,16 @@
                             </div>
                             <div class="form-group">
                                 <label>Apellido Paterno</label>
-                                <input class="form-control" maxlength="50" upperCase [ngClass]="{'is-valid': form.get('usuapepat').valid, 'is-invalid': form.get('usuapepat').invalid && form.get('usutipdoc').touched }" formControlName="usuapepat" placeholder="Apellido Paterno" name="usuapepat" type="text">
+                                <input class="form-control" maxlength="50" upperCase [ngClass]="{'is-valid': form.get('usuapepat').valid, 'is-invalid': form.get('usuapepat').invalid && form.get('usutipdoc').touched }" formControlName="usuapepat" placeholder="Apellido Paterno" name="usuapepat"
+                                    type="text">
                                 <div class="invalid-feedback">
                                     Ingrese el apellido.
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Apellido Materno</label>
-                                <input class="form-control" maxlength="50" upperCase [ngClass]="{'is-valid': form.get('usuapepat').valid, 'is-invalid': form.get('usuapepat').invalid && form.get('usutipdoc').touched }" formControlName="usuapemat" placeholder="Apellido Materno" name="usuapemat" type="text">
+                                <input class="form-control" maxlength="50" upperCase [ngClass]="{'is-valid': form.get('usuapepat').valid, 'is-invalid': form.get('usuapepat').invalid && form.get('usutipdoc').touched }" formControlName="usuapemat" placeholder="Apellido Materno" name="usuapemat"
+                                    type="text">
                                 <div class="invalid-feedback">
                                     Ingrese el apellido.
                                 </div>
@@ -269,7 +271,7 @@
                 </form>
             </div>
         </ng-template>
-        
+
         <ng-template #subirFotoPopud let-c="close" let-d="dismiss">
             <div class="modal-header">
                 <h4 class="modal-title">Cargar Foto Usuario</h4>
@@ -280,25 +282,27 @@
             <div class="modal-body">
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row no-gutters">
-                      <div class="col-md-4">
-                        <img src="http://localhost:8080/sisac/usuarios/upload/img/{{usuarioFoto.usuimagen}}" class="img-thumbnail rounded" alt="...">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="input-group">
-                                <div class="custom-file">
-                                  <input type="file" (change)="seleccionarFoto($event)" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
-                                  <label class="custom-file-label" for="inputGroupFile04">Seleccionar</label>
-                                </div>
-                                <div class="input-group-append">
-                                  <button [disabled]="!fotoSeleccionada" (click)="subirFoto()" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir</button>
+                        <div class="col-md-4">
+                            <img src="http://localhost:8080/sisac/usuarios/upload/img/{{usuarioFoto.usuimagen}}" class="img-thumbnail rounded" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" (change)="seleccionarFoto($event)" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
+                                        <label class="custom-file-label" for="inputGroupFile04">Seleccionar</label>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button [disabled]="!fotoSeleccionada" (click)="subirFoto()" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                      </div>
                     </div>
-                    <p><ngb-progressbar type="info" [value]="progreso" [striped]="true">{{ progreso }}%</ngb-progressbar></p>
-                  </div>
+                    <p>
+                        <ngb-progressbar type="info" [value]="progreso" [striped]="true">{{ progreso }}%</ngb-progressbar>
+                    </p>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" (click)="c('Close click')" type="button">Cerrar</button>

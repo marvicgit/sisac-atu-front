@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../login/login.service';
 import { ActivatedRoute } from '@angular/router';
 import { routerTransition } from '../router.animations';
+import { UsuarioService } from '../layout/usuario/usuario.service';
 
 @Component({
   selector: 'app-olvide-contrasena',
@@ -15,22 +16,15 @@ export class OlvideContrasenaComponent implements OnInit {
   error: string;
   porcentaje: number = 0;
 
-  constructor(private service: LoginService, public route: ActivatedRoute) { }
+  constructor(private serviceUsuario: UsuarioService, public route: ActivatedRoute) { }
 
   ngOnInit() {
   }
 
   enviar() {
     this.porcentaje = 99;
-    this.service.enviarCorreo(this.usuario).subscribe(data => {
-      if (data === 1) {
-        this.mensaje = 'Se enviaron las indicaciones al correo.',
-        this.error = null,
-        this.porcentaje = 100;
-      } else {
-        this.error = 'El usuario ingresado no existe';
-        this.porcentaje = 0;
-      }
+    this.serviceUsuario.enviarCorreo(this.usuario).subscribe(data => {
+      this.mensaje = 'Se enviaron las indicaciones al correo.';
     });
   }
 

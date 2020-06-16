@@ -125,8 +125,8 @@ export class UsuarioComponent implements OnInit {
   }
 
 
-  buscarUsuarioLdap() {
-    this.service.buscarUsuarioLdap(this.form.get('usulog').value).subscribe(data => {
+  buscarUsuarioLDAPAATE() {
+    this.service.buscarUsuarioLDAPAATE(this.form.get('usulogin').value).subscribe(data => {
       Swal.fire({
         position: 'top-end',
         icon: 'success',
@@ -135,7 +135,7 @@ export class UsuarioComponent implements OnInit {
         timer: 1500
       });
 
-      this.form.get('usucor').setValue(data.usucorreo.toUpperCase());
+      this.form.get('usucorreo').setValue(data.usucorreo.toUpperCase());
       this.form.get('usunom').setValue(data.usunom.toUpperCase());
       this.form.get('usuapepat').setValue(data.usuapepat.toUpperCase());
       this.form.get('usuapemat').setValue(data.usuapemat.toUpperCase());

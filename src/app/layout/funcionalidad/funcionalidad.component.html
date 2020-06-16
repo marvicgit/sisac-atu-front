@@ -65,7 +65,7 @@
                                                     <ngb-highlight [result]="item.funsig" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <span class="badge" [ngClass]="{'badge-success': item.estreg == 1, 'badge-danger': item.estreg == 0 }">{{ item.estreg == 1 ? 'ACTIVO' : 'INACTIVO' }}</span>
+                                                    <span class="badge" [ngClass]="{'badge-success': item.estreg == '1', 'badge-danger': item.estreg == '0' }">{{ item.estreg == '1' ? 'ACTIVO' : 'INACTIVO' }}</span>
                                                 </td>
                                                 <td *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')">
                                                     <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>

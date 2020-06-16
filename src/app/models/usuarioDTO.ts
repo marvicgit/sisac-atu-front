@@ -19,4 +19,5 @@ export class UsuarioDTO {
     public rolesid: number[] = [];
     public usureg: string = '';
     public usumod: string = '';
+    public estreg: string;
 }

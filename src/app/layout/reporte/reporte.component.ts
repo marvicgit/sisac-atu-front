@@ -13,6 +13,7 @@ import { TablaReporteService } from './tabla-reporte.service';
 import { DecimalPipe } from '@angular/common';
 import { RolDTO } from 'src/app/models/rolDTO';
 import { UsuarioDTO } from 'src/app/models/usuarioDTO';
+import { ReporteService } from './reporte.service';
 
 @Component({
   selector: 'app-reporte',
@@ -39,6 +40,7 @@ export class ReporteComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private serviceSistema: SistemaService,
               private serviceRol: RolService,
+              private service: ReporteService,
               public serviceTable: TablaReporteService,
               private serviceUsuario: UsuarioService) { }
 
@@ -51,7 +53,7 @@ export class ReporteComponent implements OnInit {
   }
 
   listar() {
-    this.serviceUsuario.ObtenerUsuarioDetalle().subscribe((data: ReporteDTO[]) => {
+    this.service.listar().subscribe((data: ReporteDTO[]) => {
       this.serviceTable.reportes.next(data);
       this.reportes$ = this.serviceTable.reportes$
       this.total$ = this.serviceTable.total$;
@@ -102,7 +104,7 @@ export class ReporteComponent implements OnInit {
   }
 
   buscar() {
-    this.filtrarReporte = this.reporte;
+   /* this.filtrarReporte = this.reporte;
     const usulog = this.form.get('usulog').value;
     const siscod = this.form.get('siscod').value;
     const rolcod = this.form.get('rolcod').value;
@@ -110,7 +112,7 @@ export class ReporteComponent implements OnInit {
     console.log(siscod);
     console.log(rolcod);
     if (usulog && siscod && rolcod) {
-      this.filtrarReporte = this.filtrarReporte.filter(x => x.usulog == usulog && x.siscod == siscod && x.rolcod === rolcod);
+      this.filtrarReporte = this.filtrarReporte.filter(x => x.login == usulog && x.siscod == siscod && x.rolcod === rolcod);
       this.total = this.filtrarReporte.length;
     } else if (usulog && siscod) {
       this.filtrarReporte = this.filtrarReporte.filter(x => x.usulog == usulog && x.siscod == siscod);
@@ -133,16 +135,16 @@ export class ReporteComponent implements OnInit {
     } else {
       this.filtrarReporte = this.reporte;
       this.total = this.filtrarReporte.length;
-    }
+    }*/
 
   }
 
   descargarReporte() {
-   /* const busqueda: HashBusquedaReporteDTO = new HashBusquedaReporteDTO();
+  /* const busqueda: HashBusquedaReporteDTO = new HashBusquedaReporteDTO();
     busqueda.usulog = this.form.get('usulog').value;
     busqueda.siscod = this.form.get('siscod').value;
-    busqueda.rolcod = this.form.get('rolcod').value;
-    this.serviceSisUsu.generarReporte(busqueda).subscribe(data => {
+    busqueda.rolcod = this.form.get('rolcod').value;*/
+    this.service.generarReporte().subscribe(data => {
 
       const url = window.URL.createObjectURL(data);
       const a = document.createElement('a');
@@ -151,7 +153,7 @@ export class ReporteComponent implements OnInit {
       a.href = url;
       a.download = 'archivo.pdf';
       a.click();
-    });*/
+    });
   }
 
 }

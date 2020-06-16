@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Usuario } from '../../models/usuario';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { ReporteDTO } from '../../models/reporteDTO';
 import { map, catchError } from 'rxjs/operators';
 import { UsuarioDTO } from 'src/app/models/usuarioDTO';
@@ -24,8 +24,8 @@ export class UsuarioService {
     return this.http.get<ReporteDTO[]>(`${this.url}/ObtenerUsuarioDetalle`);
   }
 
-  buscarUsuarioLdap(usulog: string){
-    return this.http.get<Usuario>(`${this.url}/BuscarUsuarioLdap/${usulog}`);
+  buscarUsuarioLDAPAATE(usulogin: string){
+    return this.http.get<Usuario>(`${this.url}/buscar-ldap-aate/${usulogin}`);
   }
 
   registrar(data: UsuarioDTO): Observable<UsuarioDTO> {
@@ -90,6 +90,38 @@ export class UsuarioService {
     });
 
     return this.http.request(req);
+  }
+
+  cambiarContraseña(data: any) {
+    return this.http.post(`${this.url}/cambiar-clave`, data).pipe(
+      catchError(e => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error al cambiar password',
+            text: e.error.mensaje,
+            showConfirmButton: false
+          });
+          return throwError(e);
+      })
+    );
+  }
+
+  enviarCorreo(usulogin: string) {
+    return this.http.post<number>(`${this.url}/enviar-correo-clave/${usulogin}`, {
+      headers: new HttpHeaders().set('Content-Type', 'text/plain')
+    }).pipe(
+      catchError(e => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error al enviar correo de clave',
+            text: e.error.mensaje,
+            showConfirmButton: false
+          });
+          return throwError(e);
+      })
+    );
   }
 
   // return this.http.get(this.baseUrl + "/file", { search: params, responseType: ResponseContentType.Blob }).map(

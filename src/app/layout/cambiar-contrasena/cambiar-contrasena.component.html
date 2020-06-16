@@ -8,7 +8,7 @@
                 <label>Nueva Contraseña</label>
                 <div class="form-group">
                     <div class="form-line">
-                        <input class="form-control" maxlength="30" [ngClass]="{'is-valid': form.get('password').valid, 'is-invalid': form.get('password').invalid }" type="password" name="password" placeholder="Nueva contraseña" formControlName="password">
+                        <input class="form-control" maxlength="30" [ngClass]="{'is-valid': form.get('password').valid, 'is-invalid': form.get('password').invalid && form.get('password').touched }" type="password" name="password" placeholder="Nueva contraseña" formControlName="password">
                         <div class="invalid-feedback">
                             Ingrese la nueva contraseña.
                         </div>
@@ -17,7 +17,7 @@
                 <label>Confirmación de contraseña</label>
                 <div class="form-group">
                     <div class="form-line">
-                        <input class="form-control" maxlength="30" [ngClass]="{'is-valid': form.get('confirmPassword').valid, 'is-invalid': form.get('confirmPassword').invalid }" type="password" placeholder="Repetir contraseña" formControlName="confirmPassword">
+                        <input class="form-control" maxlength="30" [ngClass]="{'is-valid': form.get('confirmPassword').valid, 'is-invalid': form.get('confirmPassword').invalid && form.get('confirmPassword').touched }" type="password" placeholder="Repetir contraseña" formControlName="confirmPassword">
                         <div class="invalid-feedback">
                             Ingrese la nueva contraseña.
                         </div>

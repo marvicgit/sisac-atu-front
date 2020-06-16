@@ -59,8 +59,6 @@ export class SistemaComponent implements OnInit {
 
   listar() {
     this.service.listar().subscribe((data: Sistema[]) => {
-      console.log(data);
-      
       this.serviceTable.sistemas.next(data);
       this.sistemas$ = this.serviceTable.sistemas$
       this.total$ = this.serviceTable.total$;

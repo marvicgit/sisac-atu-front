@@ -5,6 +5,7 @@ import { LoginService } from '../../login/login.service';
 import { PasswordValidation } from '../../shared';
 import { Usuario } from 'src/app/models/usuario';
 import { environment } from 'src/environments/environment';
+import { UsuarioService } from '../usuario/usuario.service';
 
 
 @Component({
@@ -22,9 +23,8 @@ export class CambiarContrasenaComponent implements OnInit {
   tokenValido: boolean;
 
   constructor(private formBuilder: FormBuilder,
-              private router: Router,
-              private route: ActivatedRoute,
-              private loginService: LoginService) {
+              private loginService: LoginService,
+              private usuarioService: UsuarioService) {
   }
 
   iniciarForm() {
@@ -37,36 +37,17 @@ export class CambiarContrasenaComponent implements OnInit {
 
   ngOnInit() {
     this.iniciarForm();
-    //this.verificarTokenReset();
-  }
-
-
-  verificarTokenReset() {
-    this.route.params.subscribe((params: Params) => {
-      this.token = params['token'];
-      this.loginService.verificarTokenReset(this.token).subscribe(data => {
-        if (data === 1) {
-          this.tokenValido = true;
-        } else {
-          this.tokenValido = false;
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
-        }
-      });
-    });
   }
 
   onSubmit() {
-    const usuario: Usuario = new Usuario();
-    usuario.usulogin = sessionStorage.getItem(environment.TOKE_USER)
-    usuario.usupassword = this.form.value.confirmPassword;
-    this.loginService.cambiarContraseña(usuario).subscribe(data => {
-      if (data === 1) {
+    const usuario = {
+      id: this.loginService.usuario.id,
+      password: this.form.value.confirmPassword
+    }
+    this.usuarioService.cambiarContraseña(usuario).subscribe(data => {
         this.loginService.logout();
-      }
     }, (err => {
-      this.rpta = 0;
+      console.log('Error al cambiar passord' + err);
     }));
   }
 }

@@ -29,29 +29,9 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <form [formGroup]="form" (submit)="buscar()" novalidate>
                                         <div class="form-row">
-                                            <div class="col">
-                                                <label class="sr-only">Usuario</label>
-                                                <input [matDatepicker]="myDatepicker" class="form-control" style="display: inline; width: 200px;">
-                                                <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
-                                                <mat-datepicker #myDatepicker></mat-datepicker>
-                                            </div>
-                                            <!-- <div class="col">
-                                                <label class="sr-only">Usuario</label>
-                                                <ng-select [items]="usuarios" bindLabel="usulog" bindValue="usulog" formControlName="usulog">
-                                                </ng-select>
-                                            </div>
-                                            <div class="col">
-                                                <label class="sr-only">Sistema</label>
-                                                <ng-select [items]="sistemas" bindLabel="sisnom" bindValue="siscod" formControlName="siscod" placeholder="Elegir Sistema">
-                                                </ng-select>
-                                            </div>
-                                            <div class="col">
-                                                <label class="sr-only">Rol</label>
-                                                <ng-select [items]="roles" bindLabel="rolnom" bindValue="rolcod" formControlName="rolcod">
-                                                </ng-select>
-                                            </div> -->
                                             <div class="col-auto">
-                                                <button type="submit" class="btn btn-primary mb-2">Buscar <i class="fa fa-search"></i></button>
+                                                <input type="text" class="form-control mb-2" name="searchTerm" [(ngModel)]="serviceTable.searchTerm" placeholder="Buscar">
+                                                <span class="ml-3" *ngIf="serviceTable.loading$ | async">Loading...</span>
                                             </div>
                                             <!-- <div class="col-auto">
                                                 <button class="btn btn-primary mb-2">Exportar <i class="fa fa-file-excel"></i>
@@ -81,22 +61,22 @@
                                         <tbody>
                                             <tr *ngFor="let item of reportes$ | async">
                                                 <td>
-                                                    <ngb-highlight [result]="item.usunom +' ' + item.usuapepat" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                    <ngb-highlight [result]="item.nombreCompleto " [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <ngb-highlight [result]="item.usulog" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                    <ngb-highlight [result]="item.login" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <ngb-highlight [result]="item.sisnom" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                    <ngb-highlight [result]="item.sistema" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <ngb-highlight [result]="item.rolnom" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                    <ngb-highlight [result]="item.perfil" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <ngb-highlight [result]="item.usuarea" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                    <ngb-highlight [result]="item.area" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <ngb-highlight [result]="item.fecha" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                    <ngb-highlight [result]="item.fechaCreacion" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                             </tr>
                                         </tbody>

@@ -47,7 +47,6 @@ export class HeaderComponent implements OnInit {
     onLoggedout() {
         console.log('salir');
         this.service.logout();
-        //this.router.navigate(['/login']);
     }
 
     irCambiarClave(){

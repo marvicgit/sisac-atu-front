@@ -84,12 +84,11 @@ export class TablaReporteService {
   }
 
   private matches(reporte: ReporteDTO, term: string) {
-    return reporte.usunom.toLowerCase().includes(term.toLowerCase())
-      || reporte.usuapepat.toLowerCase().includes(term.toLowerCase())
-      || reporte.usulog.toLowerCase().includes(term.toLowerCase())
-      || reporte.sisnom.toLowerCase().includes(term.toLowerCase())
-      || reporte.rolnom.toLowerCase().includes(term.toLowerCase())
-      || reporte.usuarea.toLowerCase().includes(term.toLowerCase());
+    return reporte.nombreCompleto.toLowerCase().includes(term.toLowerCase())
+      || reporte.sistema.toLowerCase().includes(term.toLowerCase())
+      || reporte.perfil.toLowerCase().includes(term.toLowerCase())
+      || reporte.login.toLowerCase().includes(term.toLowerCase())
+      || reporte.area.toLowerCase().includes(term.toLowerCase());
   }
 
   private sort(reportes: ReporteDTO[], column: string, direction: string): ReporteDTO[] {
