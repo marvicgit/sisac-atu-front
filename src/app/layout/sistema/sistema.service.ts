@@ -49,6 +49,17 @@ export class SistemaService {
   }
 
   eliminar(id: number) {
-    return this.http.delete(`${this.url}/${id}`);
+    return this.http.delete(`${this.url}/${id}`).pipe(
+      catchError(e => {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error al eliminar sistema',
+          text: e.error.mensaje,
+          showConfirmButton: false
+        });
+        return throwError(e);
+      })
+    );
   }
 }

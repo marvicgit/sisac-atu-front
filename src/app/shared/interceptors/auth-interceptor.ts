@@ -15,10 +15,11 @@ export class AuthInterceptor implements HttpInterceptor {
     Observable<HttpEvent<any>> {
       return next.handle(req).pipe(
         catchError(e => {
-          console.log(e);
+          console.log('paso interceptor auth' + e);
           if (e.status == '401') {
             if (this.service.isAuthenticated()) {
-              this.service.logout();
+                console.log('paso interceptor auth si autenticado');
+                //this.service.logout();
             }
             Swal.fire('Acceso Denegado', 'Hola no estas autorizado para este recurso', 'warning');
           }

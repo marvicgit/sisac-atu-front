@@ -87,7 +87,8 @@ export class TablaRolService {
   private matches(rol: RolDTO, term: string) {
     return rol.rolnom.toLowerCase().includes(term.toLowerCase())
       || rol.rolsig.toLowerCase().includes(term.toLowerCase())
-      || rol.rolnom.toLowerCase().includes(term.toLowerCase());
+      || rol.rolnom.toLowerCase().includes(term.toLowerCase())
+      || rol.sisnom.toLowerCase().includes(term.toLowerCase());
   }
 
   private sort(roles: RolDTO[], column: string, direction: string): RolDTO[] {

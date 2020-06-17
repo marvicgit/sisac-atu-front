@@ -104,6 +104,7 @@ export class RolComponent implements OnInit {
       rolsig: new FormControl('', Validators.required),
       roldes: new FormControl('', Validators.required),
       sisid: new FormControl('', Validators.required),
+      sisnom: new FormControl('', Validators.required),
       menusid: new FormControl('', Validators.required),
       funcionalidadesid: new FormControl(''),
       usureg: new FormControl(sessionStorage.getItem('username')),

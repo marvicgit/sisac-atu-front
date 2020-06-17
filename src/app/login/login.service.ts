@@ -96,13 +96,15 @@ export class LoginService {
   }
 
   logout() {
+    console.log('inicar revocar token');
     this.http.get(`${environment.HOST_URL}/sisac/security/tokens/revoke/${this.token}`).subscribe(() => {
       this._token = null;
       this._usuario = null;
       sessionStorage.clear();
+      console.log('token revocado con exito');
       this.router.navigate(['/login']);
     }, error => {
-      console.log('Error al revocar token:' + error);
+      console.log('Error al revocar token:' + JSON.stringify(error));
     });
   }
 
@@ -132,7 +134,7 @@ export class LoginService {
   }
 
   listarPermisos(data: any) {
-    return this.http.post<Permiso>(`${environment.HOST_URL}/sisac/userSistemaRoles/permisos`, data)
+    return this.http.post<Permiso>(`${environment.HOST_URL}/sisac/usuarios/permisos`, data)
     .pipe(
       map((resp: any) => {
         sessionStorage.setItem(environment.PERMISOS, JSON.stringify(resp));

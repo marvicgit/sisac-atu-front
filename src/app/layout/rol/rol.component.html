@@ -49,7 +49,7 @@
                                                 <th scope="col" sortable="rolid" (sort)="onSort($event)">Id</th>
                                                 <th scope="col" sortable="rolnom" (sort)="onSort($event)">Nombre</th>
                                                 <th scope="col" sortable="rolsig" (sort)="onSort($event)">Sigla</th>
-                                                <th scope="col">Sigla</th>
+                                                <th scope="col" sortable="sisnom" (sort)="onSort($event)">Sistema</th>
                                                 <th *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')" scope="col">Acciones</th>
                                             </tr>
                                         </thead>
@@ -65,7 +65,7 @@
                                                     <ngb-highlight [result]="item.rolsig" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td>
-                                                    <span class="badge" [ngClass]="{'badge-success': item.estreg == 1, 'badge-danger': item.estreg == 0 }">{{ item.estreg == 1 ? 'ACTIVO' : 'INACTIVO' }}</span>
+                                                    <ngb-highlight [result]="item.sisnom" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                 </td>
                                                 <td *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')">
                                                     <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>

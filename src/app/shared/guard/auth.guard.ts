@@ -12,13 +12,16 @@ export class AuthGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.service.isAuthenticated()) {
+            console.log('paso guard autenticado');
             if (this.isTokenExpirado()) {
+                console.log('paso guard token expirado');
                 this.service.logout();
                 return false;
             }
             return true;
          }
-        this.router.navigate(['/login']);
+         console.log('paso guard no autenticado');
+         this.router.navigate(['/login']);
         return false;
     }
 
