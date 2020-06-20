@@ -172,6 +172,7 @@ export class MenuComponent implements OnInit {
         this.changeSistema();
     } else {
         this.form.reset();
+        this.iniciarForm();
     }
     this.modalService.open(content).result.then((result) => {
         this.closeResult = `Closed with: ${result}`;

@@ -3,10 +3,10 @@ import { SortDirection } from 'src/app/shared/directives/sortable.directive';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { DecimalPipe } from '@angular/common';
-import { UsuarioDTO } from 'src/app/models/usuarioDTO';
+import { Usuario } from 'src/app/models/usuario';
 
 interface SearchResult {
-  usuarios: UsuarioDTO[];
+  usuarios: Usuario[];
   total: number;
 }
 
@@ -25,9 +25,9 @@ export class TablaUsuarioService {
 
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>();
-  private _usuarios$ = new BehaviorSubject<UsuarioDTO[]>([]);
+  private _usuarios$ = new BehaviorSubject<Usuario[]>([]);
   private _total$ = new BehaviorSubject<number>(0);
-  usuarios = new BehaviorSubject<UsuarioDTO[]>([]);
+  usuarios = new BehaviorSubject<Usuario[]>([]);
 
   private _state: State = {
     page: 1,
@@ -83,13 +83,13 @@ export class TablaUsuarioService {
     return of({ usuarios, total});
   }
 
-  private matches(usuario: UsuarioDTO, term: string) {
+  private matches(usuario: Usuario, term: string) {
     return usuario.usunom.toLowerCase().includes(term.toLowerCase())
       || usuario.usulogin.toLowerCase().includes(term.toLowerCase())
       || usuario.usucorreo.toLowerCase().includes(term.toLowerCase());
   }
 
-  private sort(usuarios: UsuarioDTO[], column: string, direction: string): UsuarioDTO[] {
+  private sort(usuarios: Usuario[], column: string, direction: string): Usuario[] {
     if (direction === '') {
       return usuarios;
     } else {

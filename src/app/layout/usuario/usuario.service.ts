@@ -4,7 +4,6 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpRequest, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { ReporteDTO } from '../../models/reporteDTO';
 import { map, catchError } from 'rxjs/operators';
-import { UsuarioDTO } from 'src/app/models/usuarioDTO';
 import { Observable, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -17,19 +16,30 @@ export class UsuarioService {
   constructor(private http: HttpClient) { }
 
   listar() {
-    return this.http.get<UsuarioDTO[]>(this.url);
+    return this.http.get<Usuario[]>(this.url);
   }
 
   ObtenerUsuarioDetalle() {
-    return this.http.get<ReporteDTO[]>(`${this.url}/ObtenerUsuarioDetalle`);
+    return this.http.get<Usuario[]>(`${this.url}/ObtenerUsuarioDetalle`);
   }
 
-  buscarUsuarioLDAPAATE(usulogin: string){
-    return this.http.get<Usuario>(`${this.url}/buscar-ldap-aate/${usulogin}`);
+  buscarUsuarioLDAP(usulogin: string){
+    return this.http.get<Usuario>(`${this.url}/buscar-ldap/${usulogin}`).pipe(
+      catchError(e => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error al buscar usuario',
+            text: e.error.mensaje,
+            showConfirmButton: false
+          });
+          return throwError(e);
+      })
+    );
   }
 
-  registrar(data: UsuarioDTO): Observable<UsuarioDTO> {
-    return this.http.post<UsuarioDTO>(this.url, data).pipe(
+  registrar(data: Usuario): Observable<Usuario> {
+    return this.http.post<Usuario>(this.url, data).pipe(
       catchError(e => {
           Swal.fire({
             position: 'top-end',
@@ -43,8 +53,8 @@ export class UsuarioService {
     );
   }
 
-  modificar(data: UsuarioDTO): Observable<UsuarioDTO> {
-    return this.http.put<UsuarioDTO>(this.url, data).pipe(
+  modificar(data: Usuario): Observable<Usuario> {
+    return this.http.put<Usuario>(this.url, data).pipe(
       catchError(e => {
           Swal.fire({
             position: 'top-end',

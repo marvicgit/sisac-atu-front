@@ -1,26 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Rol } from '../../models/rol';
-import { Observable, of, throwError } from 'rxjs';
-import { delay, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import Swal from 'sweetalert2';
 import { RolDTO } from 'src/app/models/rolDTO';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RolService {
+export class RolSistemaService {
 
-  url = `${environment.HOST_URL}/sisac/roles`;
+  url = `${environment.HOST_URL}/sisac/roles-sistema`;
   constructor(private http: HttpClient) { }
 
   listar() {
-    return this.http.get<Rol[]>(this.url);
+    return this.http.get<RolDTO[]>(this.url);
   }
 
-  registrar(data: Rol): Observable<Rol> {
-    return this.http.post<Rol>(this.url, data).pipe(
+  registrar(data: RolDTO): Observable<RolDTO> {
+    return this.http.post<RolDTO>(this.url, data).pipe(
       catchError(e => {
           Swal.fire({
               position: 'top-end',
@@ -34,8 +33,8 @@ export class RolService {
     );
   }
 
-  modificar(data: Rol): Observable<Rol> {
-    return this.http.put<Rol>(this.url, data).pipe(
+  modificar(data: RolDTO): Observable<RolDTO> {
+    return this.http.put<RolDTO>(this.url, data).pipe(
       catchError(e => {
           Swal.fire({
               position: 'top-end',

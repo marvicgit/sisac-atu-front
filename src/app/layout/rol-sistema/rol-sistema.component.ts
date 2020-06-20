@@ -1,50 +1,68 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Rol } from '../../models/rol';
-import { NgbModal, ModalDismissReasons, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
-import { RolService } from './rol.service';
-import Swal from 'sweetalert2';
+import { RolDTO } from 'src/app/models/rolDTO';
+import { Sistema } from 'src/app/models/sistema';
+import { MenuSistemaDTO } from 'src/app/models/menuSistemaDTO';
+import { Funcionalidad } from 'src/app/models/funcionalidad';
 import { Observable } from 'rxjs';
-import { TablaRolService } from './tabla-rol.service';
+import { NgbModal, NgbModalConfig, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { SistemaService } from '../sistema/sistema.service';
+import { MenuService } from '../menu/menu.service';
+import { FuncionalidadService } from '../funcionalidad/funcionalidad.service';
 import { SortEvent, SortableDirective } from 'src/app/shared/directives/sortable.directive';
+import Swal from 'sweetalert2';
+import { TablaRolSistemaService } from './tabla-rol-sistema.service';
+import { RolSistemaService } from './rol-sistema.service';
 import { DecimalPipe } from '@angular/common';
 import { LoginService } from 'src/app/login/login.service';
+import { RolService } from '../rol/rol.service';
+import { Rol } from 'src/app/models/rol';
 
 @Component({
-  selector: 'app-rol',
-  templateUrl: './rol.component.html',
-  styleUrls: ['./rol.component.scss'],
-  providers: [TablaRolService, DecimalPipe]
+  selector: 'app-rol-sistema',
+  templateUrl: './rol-sistema.component.html',
+  styleUrls: ['./rol-sistema.component.scss'],
+  providers: [TablaRolSistemaService, DecimalPipe]
 })
-export class RolComponent implements OnInit {
+export class RolSistemaComponent implements OnInit {
+
   form: FormGroup;
-  roles: Rol[] = [];
-  listaRoles: Rol[] = [];
+  roles: RolDTO[] = [];
+  listaRoles: RolDTO[] = [];
+  sistemas: Sistema[];
+  maestroRoles: Rol[];
+  menus: MenuSistemaDTO[] = [];
+  filtroMenus: MenuSistemaDTO[] = [];
+  funcionalidades: Funcionalidad[];
   total = 0;
   page = 0;
   pageSize = 7;
   closeResult: string;
-  roles$: Observable<Rol[]>;
+  roles$: Observable<RolDTO[]>;
   total$: Observable<number>;
   @ViewChildren(SortableDirective) headers: QueryList<SortableDirective>;
-
   constructor(private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private config: NgbModalConfig,
-              public serviceTable: TablaRolService,
+              public serviceTable: TablaRolSistemaService,
+              private serviceSistema: SistemaService,
+              private serviceMenu: MenuService,
+              private serviceRol: RolService,
+              private serviceFuncionalidad: FuncionalidadService,
               public loginService: LoginService,
-              private service: RolService) {
-                this.config.backdrop = 'static';
-                this.config.keyboard = false;
-              }
+              private service: RolSistemaService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.listar();
+    this.listarSistema();
+    this.listarMenu();
+    this.listarMaestroRoles();
     this.iniciarForm();
+    this.listarFuncionalidades();
   }
 
   listar() {
-    this.service.listar().subscribe((data: Rol[]) => {
+    this.service.listar().subscribe((data: RolDTO[]) => {
       this.serviceTable.roles.next(data);
       this.roles$ = this.serviceTable.roles$
       this.total$ = this.serviceTable.total$;
@@ -55,17 +73,49 @@ export class RolComponent implements OnInit {
     });
   }
 
+  listarMaestroRoles() {
+    this.serviceRol.listar().subscribe(data => {
+      this.maestroRoles = data;
+    });
+  }
+
+  listarSistema() {
+    this.serviceSistema.listar().subscribe(data => {
+      this.sistemas = data;
+    });
+  }
+
+  changeSistema() {
+    const id: number = this.form.get('sisid').value;
+    this.filtroMenus = this.menus.filter(l => {
+      return l.sisid == id;
+    });
+  }
+
+  listarMenu() {
+    this.serviceMenu.listar().subscribe( data => {
+      this.menus = data;
+    });
+  }
+
+  listarFuncionalidades() {
+    this.serviceFuncionalidad.listar().subscribe(data => {
+      this.funcionalidades = data;
+    });
+  }
+
   iniciarForm() {
     this.form = this.formBuilder.group({
-      id: new FormControl(null),
-      rolnom: new FormControl('', Validators.required),
-      rolsig: new FormControl('', Validators.required),
-      roldes: new FormControl('', Validators.required),
-      estreg: new FormControl(1),
+      rolsisid: new FormControl(null),
+      rolid: new FormControl('', Validators.required),
+      rolnom: new FormControl(''),
+      rolsig: new FormControl(''),
+      sisid: new FormControl('', Validators.required),
+      sisnom: new FormControl(''),
+      menusid: new FormControl('', Validators.required),
+      funcionalidadesid: new FormControl(''),
       usureg: new FormControl(sessionStorage.getItem('username')),
-      fecmod: '',
-      fecreg: '',
-      usumod: ''
+      usumod: new FormControl('')
     });
   }
 
@@ -83,7 +133,7 @@ export class RolComponent implements OnInit {
 
   registrar() {
     if (this.form.valid) {
-      if (this.form.get('id').value == null) {
+      if (this.form.get('rolsisid').value == null) {
         this.service.registrar(this.form.value).subscribe(() => {
           this.modalService.dismissAll();
           Swal.fire({
@@ -117,7 +167,7 @@ export class RolComponent implements OnInit {
     }
   }
 
-  elimnar(data: Rol) {
+  elimnar(data: RolDTO) {
     Swal.fire({
       title: '¿Estas seguro de eliminar?',
       text: 'No podras revertirlo!',
@@ -129,7 +179,7 @@ export class RolComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.value) {
-        this.service.eliminar(data.id).subscribe(() => {
+        this.service.eliminar(data.rolsisid).subscribe(() => {
           Swal.fire(
             'Eliminado!',
             'El registro fue eliminado correctamente.',
@@ -141,9 +191,10 @@ export class RolComponent implements OnInit {
     });
   }
 
-  open(content, data?: Rol) {
+  open(content, data?: RolDTO) {
     if (data != null) {
       this.form.setValue(data);
+      this.changeSistema();
   } else {
       this.form.reset();
   }

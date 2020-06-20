@@ -19,7 +19,10 @@ export class AuthInterceptor implements HttpInterceptor {
           if (e.status == '401') {
             if (this.service.isAuthenticated()) {
                 console.log('paso interceptor auth si autenticado');
-                //this.service.logout();
+                this.service.actualizarToken(this.service.refresh).subscribe((data: any) => {
+                  this.service.guardarToken(data.access_token, data.refresh_token);
+                });
+                this.service.logout();
             }
             Swal.fire('Acceso Denegado', 'Hola no estas autorizado para este recurso', 'warning');
           }

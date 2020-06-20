@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
         this.loading = true;
         this.service.login(this.form.value).subscribe((data: any) => {
             this.service.guardarUsuario(data.access_token);
-            this.service.guardarToken(data.access_token);
+            this.service.guardarToken(data.access_token, data.refresh_token);
             this.router.navigate(['/home']);
           }, (err: any) => {
             this.loading = false;

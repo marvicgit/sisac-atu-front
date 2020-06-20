@@ -157,7 +157,7 @@
                     <label>Sistema</label>
                     <div class="form-group">
                         <div class="form-line">
-                            <ng-select [items]="sistemas" bindLabel="sisnom" (change)="changeSistema()" bindValue="id" formControlName="sisid" maxlength="50">
+                            <ng-select class="form-control" [items]="sistemas" bindLabel="sisnom" (change)="changeSistema()" bindValue="id" formControlName="sisid" [ngClass]="{'is-valid': form.get('sisid').valid, 'is-invalid': form.get('sisid').invalid && form.get('sisid').touched}">
                             </ng-select>
                             <div class="invalid-feedback">Elija el sistema</div>
                         </div>

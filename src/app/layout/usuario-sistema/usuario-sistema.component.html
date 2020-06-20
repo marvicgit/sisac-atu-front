@@ -5,13 +5,13 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <ul class="breadcrumb breadcrumb-style ">
                         <li class="breadcrumb-item">
-                            <h4 class="page-title">SISTEMA</h4>
+                            <h4 class="page-title">ASIGNAR SISTEMA</h4>
                         </li>
                         <li class="breadcrumb-item bcrumb-1">
                             <a routerLink="/home">
                                 <i class="fa fa-home"></i> Home</a>
                         </li>
-                        <li class="breadcrumb-item active">Sistema</li>
+                        <li class="breadcrumb-item active">Asignar Sistema</li>
                     </ul>
                 </div>
             </div>
@@ -21,7 +21,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
                     <div class="card-header">
-                        <h2><strong>Listado de Sistemas</strong></h2>
+                        <h2><strong>Asignar Sistema</strong></h2>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -29,14 +29,13 @@
                                 <div class="col-md-6 col-sm-6 col-xs-6">
                                     <form>
                                         <div class="form-row align-items-center">
-                                            <div class="col-auto has-error">
-                                                <label class="sr-only" for="inlineFormInput">Name</label>
-                                                <input type="text" upperCase class="form-control mb-2" name="searchTerm" [(ngModel)]="serviceTable.searchTerm" placeholder="Buscar">
+                                            <div class="col-auto">
+                                                <input type="text" class="form-control mb-2" name="searchTerm" [(ngModel)]="serviceTable.searchTerm" placeholder="Buscar">
                                                 <span class="ml-3" *ngIf="serviceTable.loading$ | async">Loading...</span>
                                             </div>
                                             <div class="col-auto">
-                                                <button *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')" (click)="open(content)" class="btn btn-primary mb-2">Agregar <i class="fa fa-plus"></i>
-                                            </button>
+                                                <button (click)="open(content)" class="btn btn-primary mb-2">Agregar <i class="fa fa-plus"></i>
+                                                                  </button>
                                             </div>
                                         </div>
                                     </form>
@@ -49,30 +48,37 @@
                                             <table class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr class="table-primary">
-                                                        <th scope="col" sortable="id" (sort)="onSort($event)">Id</th>
-                                                        <th scope="col" sortable="sisnom" (sort)="onSort($event)">Nombre</th>
-                                                        <th scope="col" sortable="sissig" (sort)="onSort($event)">Sigla</th>
+                                                        <th scope="col" sortable="ususisrolcod" (sort)="onSort($event)">Id</th>
+                                                        <th scope="col" sortable="sisnom" (sort)="onSort($event)">Sistema</th>
+                                                        <th scope="col" sortable="mennom" (sort)="onSort($event)">Rol</th>
+                                                        <th scope="col" sortable="menrut" (sort)="onSort($event)">Usuario</th>
                                                         <th scope="col">Estado</th>
-                                                        <th scope="col" *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')">Acciones</th>
+                                                        <th scope="col">Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr *ngFor="let item of sistemas$ | async">
+                                                    <tr *ngFor="let item of usuarioSistemas$ | async">
                                                         <td>
-                                                            <ngb-highlight [result]="item.id" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                            <ngb-highlight [result]="item.ususisid" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                         </td>
                                                         <td>
                                                             <ngb-highlight [result]="item.sisnom" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                         </td>
                                                         <td>
-                                                            <ngb-highlight [result]="item.sissig" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                            <ngb-highlight [result]="item.rolnom" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                        </td>
+                                                        <td>
+                                                            <ngb-highlight [result]="item.usulogin" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                         </td>
                                                         <td>
                                                             <span class="badge" [ngClass]="{'badge-success': item.estreg == '1', 'badge-danger': item.estreg == '0' }">{{ item.estreg == '1' ? 'ACTIVO' : 'INACTIVO' }}</span>
                                                         </td>
-                                                        <td *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN')">
-                                                            <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>
-                                                            <button class="btn btn-sm btn-link" (click)="elimnar(item)"><i class="fa fa-trash"></i></button>
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>
+                                                                <button class="btn btn-sm btn-link" (click)="elimnar(item)"><i class="fa fa-trash"></i></button>
+                                                            </div>
+                                                            <!-- <button class="btn btn-sm btn-link " (click)="elimnar(item) " title="elimnar "><i class="fa fa-trash "></i></button> -->
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -98,61 +104,48 @@
         </div>
         <!-- #END# Basic Examples -->
         <ng-template #content let-c="close" let-d="dismiss">
-            <div class="modal-header">
-                <h4 class="modal-title">Sistema</h4>
-                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-                  <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-header ">
+                <h4 class="modal-title ">Sistema</h4>
+                <button type="button " class="close " aria-label="Close " (click)="d( 'Cross click')">
+                              <span aria-hidden="true ">&times;</span>
+                          </button>
             </div>
-            <div class="modal-body">
-                <form [formGroup]="form" (submit)="registrar()" novalidate>
-                    <label>Nombre</label>
-                    <div class="form-group">
-                        <div class="form-line">
-                            <input type="text" maxlength="50" class="form-control text-uppercase" [ngClass]="{'is-valid': form.get('sisnom').valid, 'is-invalid': form.get('sisnom').invalid && form.get('sisnom').touched }" formControlName="sisnom" placeholder="Nombre" name="sisnom">
-                            <div class="invalid-feedback">
-                                Ingrese el nombre.
-                            </div>
-                        </div>
+            <div class="modal-body ">
+                <form [formGroup]="form " (submit)="registrar()" novalidate>
+                    <label>Usuario</label>
+                    <div class="form-group ">
+                        <ng-select class="form-control" [items]="usuarios" bindLabel="usulogin" bindValue="id" formControlName="usuid" [ngClass]="{'is-valid': form.get('usuid').valid, 'is-invalid': form.get('usuid').invalid && form.get('usuid').touched}">
+                        </ng-select>
+                        <div class="invalid-feedback">Elija el usuario</div>
                     </div>
-                    <label>Descripción</label>
-                    <div class="form-group">
-                        <div class="form-line">
-                            <input type="text" maxlength="100" class="form-control" [ngClass]="{'is-valid': form.get('sisdes').valid, 'is-invalid': form.get('sisdes').invalid && form.get('sisdes').touched }" formControlName="sisdes" placeholder="Descripción" name="sisdes">
-                            <div class="invalid-feedback">
-                                Ingrese el descripción.
-                            </div>
-                        </div>
+                    <label>Sistema</label>
+                    <div class="form-group ">
+                        <ng-select class="form-control" [items]="sistemas" bindLabel="sisnom" (change)="changeSistema()" bindValue="id" formControlName="sisid" [ngClass]="{'is-valid': form.get('sisid').valid, 'is-invalid': form.get('sisid').invalid && form.get('sisid').touched}">
+                        </ng-select>
+                        <div class="invalid-feedback">Elija el sistema</div>
                     </div>
-                    <label>Sigla</label>
+                    <label>Rol</label>
                     <div class="form-group">
-                        <div class="form-line">
-                            <input type="text" upperCase maxlength="20" class="form-control" [ngClass]="{'is-valid': form.get('sissig').valid, 'is-invalid': form.get('sissig').invalid && form.get('sissig').touched }" formControlName="sissig" placeholder="Sigla" name="sissig">
-                            <div class="invalid-feedback">
-                                Ingrese la sigla.
-                            </div>
-                        </div>
+                        <ng-select class="form-control" [items]="rolesFiltrados" bindLabel="rolnom" bindValue="rolid" formControlName="rolid" [ngClass]="{'is-valid': form.get('rolid').valid, 'is-invalid': form.get('rolid').invalid && form.get('rolid').touched}">
+                        </ng-select>
+                        <div class="invalid-feedback ">Elija el rol</div>
                     </div>
                     <label>Estado</label>
                     <div class="form-group">
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline1" formControlName="estreg" name="estreg" [value]=1 checked class="custom-control-input">
+                            <input type="radio" id="customRadioInline1" formControlName="estreg" name="estreg" [value]="1" class="custom-control-input">
                             <label class="custom-control-label" for="customRadioInline1">Activo</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline2" formControlName="estreg" name="estreg" [value]=0 class="custom-control-input">
+                            <input type="radio" id="customRadioInline2" formControlName="estreg" name="estreg" [value]="0" class="custom-control-input">
                             <label class="custom-control-label" for="customRadioInline2">Inactivo</label>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success">
-                <i class="fa fa-save"></i>
-                Grabar</button>
-                    <button type="button" class="btn btn-danger waves-effect" (click)="c('Close click')">Cancel</button>
+                        <i class="fa fa-save "></i>Grabar</button>
+                    <button type="button" class="btn btn-danger waves-effect " (click)="c( 'Close click')">Cancel</button>
                 </form>
             </div>
-            <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
-            </div> -->
         </ng-template>
     </div>
 </section>

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Rol } from 'src/app/models/rol';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-import { DecimalPipe } from '@angular/common';
 import { SortDirection } from 'src/app/shared/directives/sortable.directive';
+import { BehaviorSubject, Subject, Observable, of } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
+import { tap, switchMap } from 'rxjs/operators';
+import { RolDTO } from 'src/app/models/rolDTO';
 
 interface SearchResult {
-  roles: Rol[];
+  roles: RolDTO[];
   total: number;
 }
 
@@ -21,13 +21,13 @@ interface State {
 @Injectable({
   providedIn: 'root'
 })
-export class TablaRolService {
+export class TablaRolSistemaService {
 
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>();
-  private _roles$ = new BehaviorSubject<Rol[]>([]);
+  private _roles$ = new BehaviorSubject<RolDTO[]>([]);
   private _total$ = new BehaviorSubject<number>(0);
-  roles = new BehaviorSubject<Rol[]>([]);
+  roles = new BehaviorSubject<RolDTO[]>([]);
 
   private _state: State = {
     page: 1,
@@ -48,7 +48,7 @@ export class TablaRolService {
     });
 
     this._search$.next();
-  }
+   }
 
   get roles$() { return this._roles$.asObservable(); }
   get total$() { return this._total$.asObservable(); }
@@ -83,13 +83,13 @@ export class TablaRolService {
     return of({ roles, total});
   }
 
-  private matches(rol: Rol, term: string) {
+  private matches(rol: RolDTO, term: string) {
     return rol.rolnom.toLowerCase().includes(term.toLowerCase())
       || rol.rolnom.toLowerCase().includes(term.toLowerCase())
-      || rol.roldes.toLowerCase().includes(term.toLowerCase());
+      || rol.sisnom.toLowerCase().includes(term.toLowerCase());
   }
 
-  private sort(roles: Rol[], column: string, direction: string): Rol[] {
+  private sort(roles: RolDTO[], column: string, direction: string): RolDTO[] {
     if (direction === '') {
       return roles;
     } else {

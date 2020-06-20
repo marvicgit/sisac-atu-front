@@ -57,7 +57,6 @@
                                                         <th scope="col" sortable="usunom" (sort)="onSort($event)">Nombres</th>
                                                         <th scope="col" sortable="usulog" (sort)="onSort($event)">Login</th>
                                                         <th scope="col" sortable="usucor" (sort)="onSort($event)">Correo</th>
-                                                        <th scope="col">Bloqueado</th>
                                                         <th scope="col">Estado</th>
                                                         <th *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN') || loginService.hasRole('ROLE_SISAC_USER')" scope="col">Acciones</th>
                                                     </tr>
@@ -65,7 +64,7 @@
                                                 <tbody>
                                                     <tr *ngFor="let item of usuarios$ | async">
                                                         <td>
-                                                            <ngb-highlight [result]="item.usuid" [term]="serviceTable.searchTerm"></ngb-highlight>
+                                                            <ngb-highlight [result]="item.id" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                         </td>
                                                         <td class="w-70">
                                                             <img (click)="openUpload(subirFotoPopud, item)" src="http://localhost:8080/sisac/usuarios/upload/img/{{item.usuimagen}}" alt="{{item.usuimagen}}" *ngIf="item.usuimagen" class="img-thumbnail rounded" />
@@ -80,7 +79,6 @@
                                                         <td>
                                                             <ngb-highlight [result]="item.usucorreo" [term]="serviceTable.searchTerm"></ngb-highlight>
                                                         </td>
-                                                        <td><span class="badge" [ngClass]="{'badge-success': item.usuenable, 'badge-danger': !item.usuenable }">{{ item.usuenable ? 'SI' : 'NO' }}</span></td>
                                                         <td><span class="badge" [ngClass]="{'badge-success': item.estreg == '1', 'badge-danger': item.estreg =='0' }">{{ item.estreg == '1' ? 'ACTIVO' : 'INACTIVO' }}</span></td>
                                                         <td *ngIf="loginService.hasRole('ROLE_SISAC_ADMIN') || loginService.hasRole('ROLE_SISAC_USER')">
                                                             <button class="btn btn-sm btn-link" (click)="open(content, item)"><i class="fa fa-pencil"></i></button>
@@ -142,12 +140,6 @@
                             <div class="form-group">
                                 <label>Contraseña</label>
                                 <input class="form-control" maxlength="20" formControlName="usupassword" placeholder="Contraseña" name="usupas" type="password">
-                            </div>
-                            <div class="form-group">
-                                <label>Roles</label>
-                                <ng-select [items]="roles" bindLabel="rolnom" [multiple]="true" bindValue="rolid" formControlName="rolesid">
-                                </ng-select>
-                                <div class="invalid-feedback">Elija el menu</div>
                             </div>
                         </div>
                         <div [hidden]="selectedTabId != 'personal'">
@@ -283,7 +275,7 @@
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row no-gutters">
                         <div class="col-md-4">
-                            <img src="http://localhost:8080/sisac/usuarios/upload/img/{{usuarioFoto.usuimagen}}" class="img-thumbnail rounded" alt="...">
+                            <img src="http://localhost:8080/sisac/usuarios/upload/img/{{usuarioFoto.usuimagen == null ? 'fff.png' : usuarioFoto.usuimagen}}" class="img-thumbnail rounded" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">

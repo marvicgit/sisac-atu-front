@@ -155,6 +155,7 @@ export class SistemaComponent implements OnInit {
         if (sistema != null) {
             this.form.setValue(sistema);
         } else {
+            this.form.reset();
             this.iniciarForm();
         }
         this.modalService.open(content).result.then((result) => {

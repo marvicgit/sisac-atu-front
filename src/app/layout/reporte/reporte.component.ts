@@ -3,10 +3,9 @@ import { Sistema } from 'src/app/models/sistema';
 import { SistemaService } from '../sistema/sistema.service';
 import { RolService } from '../rol/rol.service';
 import { Funcionalidad } from 'src/app/models/funcionalidad';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { UsuarioService } from '../usuario/usuario.service';
 import { ReporteDTO } from '../../models/reporteDTO';
-import { HashBusquedaReporteDTO } from 'src/app/models/hashBusquedaReporteDTO';
 import { Observable } from 'rxjs';
 import { SortableDirective, SortEvent } from 'src/app/shared/directives/sortable.directive';
 import { TablaReporteService } from './tabla-reporte.service';
@@ -22,7 +21,7 @@ import { ReporteService } from './reporte.service';
   providers: [TablaReporteService, DecimalPipe]
 })
 export class ReporteComponent implements OnInit {
-  form: FormGroup;
+
   reporte: ReporteDTO[] = [];
   filtrarReporte: ReporteDTO[] = [];
   sistemas: Sistema[] = [];
@@ -45,7 +44,6 @@ export class ReporteComponent implements OnInit {
               private serviceUsuario: UsuarioService) { }
 
   ngOnInit() {
-    this.iniciarForm();
     this.listar();
     this.listarSistemas();
     this.listarRoles();
@@ -71,24 +69,15 @@ export class ReporteComponent implements OnInit {
   }
 
   listarRoles() {
-    this.serviceRol.listar().subscribe((data: RolDTO[]) => {
+    /*this.serviceRol.listar().subscribe((data: RolDTO[]) => {
       this.roles = data;
-    });
+    });*/
   }
 
   listarUsuarios() {
-    this.serviceUsuario.listar().subscribe((data: UsuarioDTO[]) => {
+    /*this.serviceUsuario.listar().subscribe((data: Usuario[]) => {
       this.usuarios = data;
-    });
-  }
-
-  iniciarForm() {
-    this.form = this.formBuilder.group({
-      usulog: new FormControl(''),
-      siscod: new FormControl(''),
-      rolcod: new FormControl(''),
-      estreg: new FormControl('')
-    });
+    });*/
   }
 
   onSort({column, direction}: SortEvent) {

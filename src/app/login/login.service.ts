@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario';
 import { Login } from '../models/login/login';
 import { Permiso } from '../models/permiso';
-import { throwError } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { isPlatformBrowser } from '@angular/common';
@@ -20,6 +20,7 @@ export class LoginService {
   premisos: Permiso;
   private _usuario: Usuario;
   private _token: string;
+  private _refresh: string;
   constructor(private http: HttpClient,
               private router: Router,
               @Inject(PLATFORM_ID) private platformId: any) {
@@ -42,6 +43,16 @@ export class LoginService {
     } else if (this._token == null && sessionStorage.getItem('token') != null) {
       this._token = sessionStorage.getItem('token');
       return this._token;
+    }
+    return null;
+  }
+
+  public get refresh(): string {
+    if (this._refresh != null) {
+      return this._refresh;
+    } else if (this._refresh == null && sessionStorage.getItem('refresh') != null) {
+      this._refresh = sessionStorage.getItem('refresh');
+      return this._refresh;
     }
     return null;
   }
@@ -73,6 +84,7 @@ export class LoginService {
     this._usuario.usucorreo = payload.correo;
     this._usuario.roles = payload.authorities;
     sessionStorage.setItem('usuario', JSON.stringify(this._usuario));
+    sessionStorage.setItem('username', this._usuario.usulogin);
   }
 
   obtenerDatosToken(accessToken: string): any {
@@ -82,9 +94,11 @@ export class LoginService {
     return null;
   }
 
-  guardarToken(accessToken: string) {
+  guardarToken(accessToken: string, refreshToken: string) {
     this._token = accessToken;
+    this._refresh = refreshToken;
     sessionStorage.setItem('token', this._token);
+    sessionStorage.setItem('refresh', this._refresh);
   }
 
   isAuthenticated(): boolean {
@@ -105,6 +119,10 @@ export class LoginService {
       this.router.navigate(['/login']);
     }, error => {
       console.log('Error al revocar token:' + JSON.stringify(error));
+      this._token = null;
+      this._usuario = null;
+      sessionStorage.clear();
+      this.router.navigate(['/login']);
     });
   }
 
@@ -115,12 +133,19 @@ export class LoginService {
     return false;
   }
 
+  actualizarToken(refreshToken: string): Observable<any> {
+    const credenciales = btoa(environment.TOKEN_AUTH_USERNAME + ':' + environment.TOKEN_AUTH_PASSWORD);
 
-  refreshToken(refreshToken: string) {
-    const body = `grant_type=refresh_token&refresh_token=${encodeURIComponent(refreshToken)}`;
-    return this.http.post(this.url, body, {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8').set('Authorization', 'Basic ' + btoa(environment.TOKEN_AUTH_USERNAME + ':' + environment.TOKEN_AUTH_PASSWORD))
+    const httpHeaders = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + credenciales
     });
+
+    const params = new URLSearchParams();
+    params.set('grant_type', 'refresh_token');
+    params.set('refresh_token', refreshToken);
+    return this.http.post<any>(`${this.url}/token`, params.toString(), { headers: httpHeaders });
+
   }
 
   verificarTokenReset(token: string) {

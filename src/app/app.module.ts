@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
 import { TokenInterceptor } from './shared/interceptors/token-interceptor';
 import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
-import { LoginService } from './login/login.service';
 
 export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;

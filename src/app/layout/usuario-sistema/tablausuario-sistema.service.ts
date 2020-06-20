@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Rol } from 'src/app/models/rol';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-import { DecimalPipe } from '@angular/common';
+import { UsuarioSistemaDTO } from '../../models/usuarioSistemaDTO';
 import { SortDirection } from 'src/app/shared/directives/sortable.directive';
+import { BehaviorSubject, Subject, Observable, of } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
+import { tap, switchMap } from 'rxjs/operators';
 
 interface SearchResult {
-  roles: Rol[];
+  usuariosSistemas: UsuarioSistemaDTO[];
   total: number;
 }
 
@@ -18,16 +18,17 @@ interface State {
   sortDirection: SortDirection;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
-export class TablaRolService {
+export class TablausuarioSistemaService {
 
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>();
-  private _roles$ = new BehaviorSubject<Rol[]>([]);
+  private _usuariosSistemas$ = new BehaviorSubject<UsuarioSistemaDTO[]>([]);
   private _total$ = new BehaviorSubject<number>(0);
-  roles = new BehaviorSubject<Rol[]>([]);
+  usuariosSistemas = new BehaviorSubject<UsuarioSistemaDTO[]>([]);
 
   private _state: State = {
     page: 1,
@@ -35,7 +36,7 @@ export class TablaRolService {
     searchTerm: '',
     sortColumn: '',
     sortDirection: ''
-  };
+  }
 
   constructor(private pipe: DecimalPipe) {
     this._search$.pipe(
@@ -43,14 +44,14 @@ export class TablaRolService {
       switchMap(() => this._search()),
       tap(() => this._loading$.next(false))
     ).subscribe(result => {
-      this._roles$.next(result.roles);
+      this._usuariosSistemas$.next(result.usuariosSistemas);
       this._total$.next(result.total);
     });
 
     this._search$.next();
   }
 
-  get roles$() { return this._roles$.asObservable(); }
+  get usuariosSistemas$() { return this._usuariosSistemas$.asObservable(); }
   get total$() { return this._total$.asObservable(); }
   get loading$() { return this._loading$.asObservable(); }
   get page() { return this._state.page; }
@@ -72,28 +73,29 @@ export class TablaRolService {
     const {sortColumn, sortDirection, pageSize, page, searchTerm} = this._state;
 
     // 1. sort
-    let roles = this.sort(this.roles.value, sortColumn, sortDirection);
+    let usuariosSistemas = this.sort(this.usuariosSistemas.value, sortColumn, sortDirection);
 
     // 2. filter
-    roles = roles.filter(rs => this.matches(rs, searchTerm));
-    const total = roles.length;
+    usuariosSistemas = usuariosSistemas.filter(rs => this.matches(rs, searchTerm));
+    const total = usuariosSistemas.length;
 
     // 3. paginate
-    roles = roles.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
-    return of({ roles, total});
+    usuariosSistemas = usuariosSistemas.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
+    return of({ usuariosSistemas, total});
   }
 
-  private matches(rol: Rol, term: string) {
-    return rol.rolnom.toLowerCase().includes(term.toLowerCase())
-      || rol.rolnom.toLowerCase().includes(term.toLowerCase())
-      || rol.roldes.toLowerCase().includes(term.toLowerCase());
+  private matches(usuarioSistema: UsuarioSistemaDTO, term: string) {
+    return usuarioSistema.usunom.toLowerCase().includes(term.toLowerCase())
+      || usuarioSistema.usulogin.toLowerCase().includes(term.toLowerCase())
+      || usuarioSistema.rolnom.toLowerCase().includes(term.toLowerCase())
+      || usuarioSistema.sisnom.toLowerCase().includes(term.toLowerCase());
   }
 
-  private sort(roles: Rol[], column: string, direction: string): Rol[] {
+  private sort(usuariosSistemas: UsuarioSistemaDTO[], column: string, direction: string): UsuarioSistemaDTO[] {
     if (direction === '') {
-      return roles;
+      return usuariosSistemas;
     } else {
-      return [...roles].sort((a, b) => {
+      return [...usuariosSistemas].sort((a, b) => {
         const res = this.compare(a[column], b[column]);
         return direction === 'asc' ? res : -res;
       });

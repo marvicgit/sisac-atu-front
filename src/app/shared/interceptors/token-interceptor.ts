@@ -16,8 +16,9 @@ export class TokenInterceptor implements HttpInterceptor {
     Observable<HttpEvent<any>> {
       const token = this.service.token;
       const revokeToken = '/sisac/security/tokens/revoke';
+      const oauthToken = '/oauth/token';
       // Exclude interceptor for revoke token request:
-      if (req.url.search(revokeToken) === -1 ) {
+      if (req.url.search(revokeToken) === -1 || req.url.search(oauthToken) === -1) {
         if (token != null) {
           const authReq = req.clone({
             headers: req.headers.set('Authorization', 'Bearer ' + token)

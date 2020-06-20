@@ -15,13 +15,17 @@ export class AuthGuard implements CanActivate {
             console.log('paso guard autenticado');
             if (this.isTokenExpirado()) {
                 console.log('paso guard token expirado');
+                this.service.actualizarToken(this.service.refresh).subscribe((data: any) => {
+                    console.log('paso guard token actualizado');
+                    this.service.guardarToken(data.access_token, data.refresh_token);
+                  });
                 this.service.logout();
                 return false;
             }
             return true;
          }
-         console.log('paso guard no autenticado');
-         this.router.navigate(['/login']);
+        console.log('paso guard no autenticado');
+        this.router.navigate(['/login']);
         return false;
     }
 

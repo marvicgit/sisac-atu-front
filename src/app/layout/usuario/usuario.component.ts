@@ -10,12 +10,10 @@ import { TablaUsuarioService } from './tabla-usuario.service';
 import { DecimalPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { SortableDirective, SortEvent } from 'src/app/shared/directives/sortable.directive';
-import { RolService } from '../rol/rol.service';
-import { RolDTO } from 'src/app/models/rolDTO';
 import { Sistema } from 'src/app/models/sistema';
-import { UsuarioDTO } from 'src/app/models/usuarioDTO';
 import { LoginService } from 'src/app/login/login.service';
 import { HttpEventType } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-usuario',
@@ -30,16 +28,14 @@ export class UsuarioComponent implements OnInit {
   total = 0;
   pageSize = 7;
   closeResult: string;
-  usuarios: UsuarioDTO[] = [];
-  listaUsuarios: UsuarioDTO[] = [];
+  usuarios: Usuario[] = [];
+  listaUsuarios: Usuario[] = [];
   sistemas: Sistema[];
-  roles: RolDTO[] = [];
-  filtroRoles: RolDTO[] = [];
   fotoSeleccionada: File;
   usuarioFoto: Usuario;
   progreso = 0;
 
-  usuarios$: Observable<UsuarioDTO[]>;
+  usuarios$: Observable<Usuario[]>;
   total$: Observable<number>;
   @ViewChildren(SortableDirective) headers: QueryList<SortableDirective>;
 
@@ -47,7 +43,6 @@ export class UsuarioComponent implements OnInit {
               private modalService: NgbModal,
               config: NgbModalConfig,
               private service: UsuarioService,
-              private serviceRol: RolService,
               public serviceTable: TablaUsuarioService,
               public loginService: LoginService,
               private router: Router) {
@@ -58,12 +53,11 @@ export class UsuarioComponent implements OnInit {
   ngOnInit() {
     this.iniciarForm();
     this.listar();
-    this.listarRoles();
   }
 
   iniciarForm() {
     this.form = this.formBuilder.group({
-      usuid: new FormControl(null),
+      id: new FormControl(null),
       usutipdoc: new FormControl('', Validators.required),
       usudni: new FormControl('', Validators.required),
       usunom: new FormControl('', Validators.required),
@@ -80,10 +74,11 @@ export class UsuarioComponent implements OnInit {
       usuimagen: new FormControl(null),
       usuteffijo: new FormControl(null),
       usutefmovil: new FormControl(null),
-      rolesid: new FormControl(null),
-      estreg: new FormControl(null),
-      usureg: new FormControl(sessionStorage.getItem('username')),
-      usumod: ''
+      estreg: new FormControl(1),
+      usureg: sessionStorage.getItem('username'),
+      usumod: '',
+      fecmod: '',
+      fecreg: '',
       });
   }
   // unApellido(control: FormControl): {[s:string]: boolean} {
@@ -96,7 +91,7 @@ export class UsuarioComponent implements OnInit {
   // }
 
   listar() {
-    this.service.listar().subscribe((data: UsuarioDTO[]) => {
+    this.service.listar().subscribe((data: Usuario[]) => {
       this.serviceTable.usuarios.next(data);
       this.usuarios$ = this.serviceTable.usuarios$
       this.total$ = this.serviceTable.total$;
@@ -107,11 +102,7 @@ export class UsuarioComponent implements OnInit {
     });
   }
 
-  listarRoles() {
-    this.serviceRol.listar().subscribe((data: RolDTO[]) => {
-      this.roles = data;
-    });
-  }
+
 
   onSort({column, direction}: SortEvent) {
     this.headers.forEach(header => {
@@ -126,7 +117,7 @@ export class UsuarioComponent implements OnInit {
 
 
   buscarUsuarioLDAPAATE() {
-    this.service.buscarUsuarioLDAPAATE(this.form.get('usulogin').value).subscribe(data => {
+    this.service.buscarUsuarioLDAP(this.form.get('usulogin').value).subscribe(data => {
       Swal.fire({
         position: 'top-end',
         icon: 'success',
@@ -142,12 +133,14 @@ export class UsuarioComponent implements OnInit {
     });
   }
 
-  open(content, data?: UsuarioDTO) {
+  open(content, data?: Usuario) {
     this.selectedTabId = 'acceso';
     if (data != null) {
+      data.usupassword = '';
       this.form.setValue(data);
     } else {
        this.form.reset();
+       this.iniciarForm();
     }
     this.modalService.open(content).result.then((result) => {
         this.closeResult = `Closed with: ${result}`;
@@ -166,7 +159,7 @@ export class UsuarioComponent implements OnInit {
     }
   }
 
-  elimnar(data: UsuarioDTO) {
+  elimnar(data: Usuario) {
     Swal.fire({
       title: '¿Estas seguro de eliminar?',
       text: 'No podras revertirlo!',
@@ -178,7 +171,7 @@ export class UsuarioComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.value) {
-        this.service.eliminar(data.usuid).subscribe(() => {
+        this.service.eliminar(data.id).subscribe(() => {
           Swal.fire(
             'Eliminado!',
             'El registro fue eliminado correctamente.',
@@ -205,8 +198,8 @@ export class UsuarioComponent implements OnInit {
 
   registrar() {
     if (this.form.valid) {
-      if (this.form.get('usuid').value == null) {
-        this.form.get('usureg').setValue('1');
+      if (this.form.get('id').value == null) {
+        this.form.get('usureg').setValue(sessionStorage.getItem('username'));
         this.service.registrar(this.form.value).subscribe(data => {
           this.modalService.dismissAll();
           Swal.fire({
@@ -220,7 +213,7 @@ export class UsuarioComponent implements OnInit {
           this.listar();
         });
       } else {
-          this.form.get('usumod').setValue('1');
+          this.form.get('usumod').setValue(sessionStorage.getItem('username'));
           this.service.modificar(this.form.value).subscribe(data =>{
             console.log(data);
             this.modalService.dismissAll();
@@ -234,13 +227,17 @@ export class UsuarioComponent implements OnInit {
             this.listar();
           });
       }
+    } else {
+      Object.values(this.form.controls).forEach(c => {
+        c.markAsTouched();
+      });
     }
   }
 
-  openUpload(content, data?: UsuarioDTO) {
+  openUpload(content, data?: Usuario) {
     this.progreso = 0;
     this.usuarioFoto = new Usuario();
-    this.usuarioFoto.id = data.usuid;
+    this.usuarioFoto.id = data.id;
     this.usuarioFoto.usuimagen = data.usuimagen;
     this.modalService.open(content).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
