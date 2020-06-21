@@ -49,6 +49,7 @@ export class SistemaComponent implements OnInit {
         sisnom: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         sisdes: new FormControl('', [Validators.required, Validators.maxLength(100)]),
         sissig: new FormControl('', [Validators.required, Validators.maxLength(15)]),
+        captcha: new FormControl(false),
         estreg: new FormControl(1),
         usureg: new FormControl(sessionStorage.getItem('username')),
         fecmod: '',

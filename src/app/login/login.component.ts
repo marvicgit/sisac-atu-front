@@ -40,8 +40,8 @@ export class LoginComponent implements OnInit {
     iniciarForm() {
       this.form = this.formBuilder.group({
         email: new FormControl(null, Validators.required),
-        password: new FormControl(null, Validators.required)
-        //recaptchaReactive: new FormControl(null, Validators.required)
+        password: new FormControl(null, Validators.required),
+        captcha: new FormControl(null, Validators.required)
         });
     }
 

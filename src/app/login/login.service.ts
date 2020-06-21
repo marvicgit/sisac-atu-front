@@ -70,6 +70,7 @@ export class LoginService {
     params.set('grant_type', 'password');
     params.set('username', login.email);
     params.set('password', login.password);
+    params.set('captcha', login.captcha);
     return this.http.post(`${this.url}/token`, params.toString(), { headers: httpHeaders });
   }
 
