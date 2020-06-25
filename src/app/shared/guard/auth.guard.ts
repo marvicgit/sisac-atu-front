@@ -13,12 +13,19 @@ export class AuthGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.service.isAuthenticated()) {
             console.log('paso guard autenticado');
-            if (this.isTokenExpirado()) {
-                console.log('paso guard token expirado');
-                this.service.actualizarToken(this.service.refresh).subscribe((data: any) => {
+            if (this.service.isTokenExpirado() && this.service.isRefreshExpirado()) {
+                console.log('access y refresh expirado salir');
+                this.service.logout();
+                return false;
+            }
+
+            if (this.service.isTokenExpirado() && !this.service.isRefreshExpirado()) {
+                console.log('paso guard token expirado salir');
+                /*this.service.actualizarToken(this.service.refresh).subscribe((data: any) => {
                     console.log('paso guard token actualizado');
                     this.service.guardarToken(data.access_token, data.refresh_token);
-                  });
+                  }, (err: any) => console.log('erro actualizar token guard' + err)
+                  );*/
                 this.service.logout();
                 return false;
             }
@@ -26,16 +33,6 @@ export class AuthGuard implements CanActivate {
          }
         console.log('paso guard no autenticado');
         this.router.navigate(['/login']);
-        return false;
-    }
-
-    isTokenExpirado(): boolean {
-        const token = this.service.token;
-        const payload = this.service.obtenerDatosToken(token);
-        const now = new Date().getTime() / 1000;
-        if (payload.exp < now) {
-            return true;
-        }
         return false;
     }
 }

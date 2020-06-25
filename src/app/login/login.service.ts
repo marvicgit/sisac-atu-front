@@ -134,7 +134,7 @@ export class LoginService {
     return false;
   }
 
-  actualizarToken(refreshToken: string): Observable<any> {
+  actualizarToken(refreshToken: string){
     const credenciales = btoa(environment.TOKEN_AUTH_USERNAME + ':' + environment.TOKEN_AUTH_PASSWORD);
 
     const httpHeaders = new HttpHeaders({
@@ -145,8 +145,29 @@ export class LoginService {
     const params = new URLSearchParams();
     params.set('grant_type', 'refresh_token');
     params.set('refresh_token', refreshToken);
-    return this.http.post<any>(`${this.url}/token`, params.toString(), { headers: httpHeaders });
+    return this.http.post(`${this.url}/token`, params.toString(), { headers: httpHeaders });
 
+  }
+
+  isTokenExpirado(): boolean {
+    const payload = this.obtenerDatosToken(this.token);
+    const now = new Date().getTime() / 1000;
+    if (payload.exp < now) {
+        console.log('acces expirado'  + now );
+        return true;
+    }
+    return false;
+  }
+
+  isRefreshExpirado(): boolean {
+    const payload = this.obtenerDatosToken(this.refresh);
+    const now = new Date().getTime() / 1000;
+    if (payload.exp < now) {
+        console.log('refresh expirado'  + now );
+        return true;
+    }
+    console.log('refresh no expirado'  + now );
+    return false;
   }
 
   verificarTokenReset(token: string) {
